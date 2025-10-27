@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { HelpCircle, Package } from 'lucide-react';
 import ImporterFichier from '@/components/ImporterFichier';
@@ -6,6 +6,8 @@ import TableauProduits from '@/components/TableauProduits';
 import ApercuPlanche from '@/components/ApercuPlanche';
 import ExportPDF from '@/components/ExportPDF';
 import DidacticielInteractif from '@/components/DidacticielInteractif';
+import UploadImages from '@/components/UploadImages';
+import EditeurTemplate, { TemplateConfig } from '@/components/EditeurTemplate';
 import logoPoint54 from '@/assets/logo-point54.png';
 
 interface Product {
@@ -13,13 +15,50 @@ interface Product {
   PRIX: string;
   DESIGNATION: string;
   REFERENCE: string;
+  QR_CODE?: string;
 }
+
+const DEFAULT_TEMPLATE: TemplateConfig = {
+  fontSize: {
+    designation: 7,
+    reference: 6,
+    price: 16,
+    barcode: 6,
+  },
+  colors: {
+    price: '#FF6600',
+    text: '#000000',
+    logo: '#FF6600',
+  },
+  fontFamily: 'Arial',
+  logoSize: 40,
+  imageHeight: 60,
+};
 
 const Index = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [showTutorial, setShowTutorial] = useState(false);
   const [currentView, setCurrentView] = useState<'import' | 'table' | 'preview'>('import');
+  const [productImages, setProductImages] = useState<Record<string, string>>({});
+  const [templateConfig, setTemplateConfig] = useState<TemplateConfig>(DEFAULT_TEMPLATE);
+
+  // Load saved config from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem('point54-template-config');
+    if (saved) {
+      try {
+        setTemplateConfig(JSON.parse(saved));
+      } catch (e) {
+        console.error('Failed to load template config');
+      }
+    }
+  }, []);
+
+  // Save config to localStorage
+  useEffect(() => {
+    localStorage.setItem('point54-template-config', JSON.stringify(templateConfig));
+  }, [templateConfig]);
 
   const handleDataImported = (data: any[]) => {
     const formattedProducts = data.map((item) => ({
@@ -27,9 +66,14 @@ const Index = () => {
       PRIX: item.PRIX || '',
       DESIGNATION: item.DESIGNATION || '',
       REFERENCE: item.REFERENCE || '',
+      QR_CODE: item.QR_CODE || '',
     }));
     setProducts(formattedProducts);
     setCurrentView('table');
+  };
+
+  const handleImagesUploaded = (images: Record<string, string>) => {
+    setProductImages(images);
   };
 
   const selectedProducts = selectedIds
@@ -118,18 +162,30 @@ const Index = () => {
           )}
 
           {currentView === 'table' && products.length > 0 && (
-            <div>
-              <div className="flex justify-between items-center mb-6">
+            <div className="space-y-6">
+              <div className="flex justify-between items-center">
                 <h2 className="text-2xl font-bold text-foreground">
                   Gestion des produits
                 </h2>
-                <Button
-                  onClick={() => setCurrentView('preview')}
-                  disabled={selectedIds.length === 0}
-                >
-                  Voir l'aperçu ({selectedIds.length})
-                </Button>
+                <div className="flex gap-3">
+                  <EditeurTemplate 
+                    config={templateConfig}
+                    onConfigChange={setTemplateConfig}
+                  />
+                  <Button
+                    onClick={() => setCurrentView('preview')}
+                    disabled={selectedIds.length === 0}
+                  >
+                    Voir l'aperçu ({selectedIds.length})
+                  </Button>
+                </div>
               </div>
+
+              <UploadImages
+                onImagesUploaded={handleImagesUploaded}
+                productReferences={products.map(p => p.REFERENCE)}
+              />
+
               <TableauProduits
                 products={products}
                 onProductsChange={setProducts}
@@ -145,9 +201,19 @@ const Index = () => {
                 <h2 className="text-2xl font-bold text-foreground">
                   Aperçu des planches A4
                 </h2>
-                <ExportPDF selectedProducts={selectedProducts} />
+                <div className="flex gap-3">
+                  <EditeurTemplate 
+                    config={templateConfig}
+                    onConfigChange={setTemplateConfig}
+                  />
+                  <ExportPDF selectedProducts={selectedProducts} />
+                </div>
               </div>
-              <ApercuPlanche selectedProducts={selectedProducts} />
+              <ApercuPlanche 
+                selectedProducts={selectedProducts}
+                productImages={productImages}
+                templateConfig={templateConfig}
+              />
             </div>
           )}
         </div>

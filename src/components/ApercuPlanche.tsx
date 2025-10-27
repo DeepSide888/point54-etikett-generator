@@ -1,60 +1,128 @@
+import { QRCodeSVG } from 'qrcode.react';
 import logoPoint54 from '@/assets/logo-point54.png';
+import { TemplateConfig } from './EditeurTemplate';
 
 interface Product {
   CODEBAR: string;
   PRIX: string;
   DESIGNATION: string;
   REFERENCE: string;
+  QR_CODE?: string;
 }
 
 interface ApercuPlancheProps {
   selectedProducts: Product[];
+  productImages: Record<string, string>;
+  templateConfig: TemplateConfig;
 }
 
-const ApercuPlanche = ({ selectedProducts }: ApercuPlancheProps) => {
+const ApercuPlanche = ({ selectedProducts, productImages, templateConfig }: ApercuPlancheProps) => {
   // Calculate pages needed (24 labels per page - 3 columns x 8 rows)
   // Label dimensions: 72mm x 32mm
   const labelsPerPage = 24;
   const pages = Math.ceil(selectedProducts.length / labelsPerPage);
   
-  const renderLabel = (product: Product) => (
-    <div className="label-box bg-white border border-gray-400 flex flex-col h-full overflow-hidden">
-      {/* Logo - Top Left Corner */}
-      <div className="px-1 pt-1 pb-0.5">
-        <img src={logoPoint54} alt="Point 54" className="w-10 h-10 object-contain" />
-      </div>
-      
-      {/* Product Image - Large and prominent */}
-      <div className="bg-gray-100 flex items-center justify-center flex-shrink-0 border-y border-gray-300" style={{ height: '60px' }}>
-        <span className="text-[8px] text-gray-400 font-medium">IMAGE</span>
-      </div>
-      
-      {/* Product Info Section */}
-      <div className="flex-grow px-2 py-1 flex flex-col justify-between">
-        {/* Designation - Bold and prominent */}
-        <div className="mb-1">
-          <p className="text-[7px] font-bold leading-tight line-clamp-2 uppercase">{product.DESIGNATION}</p>
+  const renderLabel = (product: Product) => {
+    const hasImage = productImages[product.REFERENCE];
+    const hasQRCode = product.QR_CODE && product.QR_CODE.trim() !== '';
+    
+    return (
+      <div 
+        className="label-box bg-white border border-gray-400 flex flex-col h-full overflow-hidden"
+        style={{ fontFamily: templateConfig.fontFamily }}
+      >
+        {/* Header: Logo + QR Code */}
+        <div className="flex items-start justify-between px-1 pt-1 pb-0.5">
+          <img 
+            src={logoPoint54} 
+            alt="Point 54" 
+            style={{ width: `${templateConfig.logoSize}px`, height: `${templateConfig.logoSize}px` }}
+            className="object-contain"
+          />
+          
+          {hasQRCode && (
+            <div className="flex-shrink-0">
+              <QRCodeSVG 
+                value={product.QR_CODE!} 
+                size={templateConfig.logoSize}
+                level="M"
+              />
+            </div>
+          )}
         </div>
         
-        {/* Reference */}
-        <div className="mb-1">
-          <p className="text-[6px] text-gray-600">Réf: {product.REFERENCE}</p>
+        {/* Product Image */}
+        <div 
+          className="bg-gray-100 flex items-center justify-center flex-shrink-0 border-y border-gray-300 overflow-hidden"
+          style={{ height: `${templateConfig.imageHeight}px` }}
+        >
+          {hasImage ? (
+            <img 
+              src={productImages[product.REFERENCE]} 
+              alt={product.DESIGNATION}
+              className="w-full h-full object-contain"
+            />
+          ) : (
+            <span 
+              className="text-gray-400 font-medium"
+              style={{ fontSize: `${templateConfig.fontSize.reference}px` }}
+            >
+              IMAGE
+            </span>
+          )}
         </div>
         
-        {/* Price - Large and centered with € symbol */}
-        <div className="text-center py-1">
-          <p className="text-[16px] font-bold leading-none" style={{ color: '#FF6600' }}>
-            {product.PRIX}
-          </p>
-        </div>
-        
-        {/* Barcode */}
-        <div className="border-t border-gray-300 pt-1 mt-1">
-          <p className="text-[6px] text-center font-mono tracking-tight">{product.CODEBAR}</p>
+        {/* Product Info Section */}
+        <div className="flex-grow px-2 py-1 flex flex-col justify-between">
+          {/* Designation */}
+          <div className="mb-1">
+            <p 
+              className="font-bold leading-tight line-clamp-2 uppercase"
+              style={{ 
+                fontSize: `${templateConfig.fontSize.designation}px`,
+                color: templateConfig.colors.text
+              }}
+            >
+              {product.DESIGNATION}
+            </p>
+          </div>
+          
+          {/* Reference */}
+          <div className="mb-1">
+            <p 
+              className="text-gray-600"
+              style={{ fontSize: `${templateConfig.fontSize.reference}px` }}
+            >
+              Réf: {product.REFERENCE}
+            </p>
+          </div>
+          
+          {/* Price */}
+          <div className="text-center py-1">
+            <p 
+              className="font-bold leading-none"
+              style={{ 
+                fontSize: `${templateConfig.fontSize.price}px`,
+                color: templateConfig.colors.price
+              }}
+            >
+              {product.PRIX}
+            </p>
+          </div>
+          
+          {/* Barcode */}
+          <div className="border-t border-gray-300 pt-1 mt-1">
+            <p 
+              className="text-center font-mono tracking-tight"
+              style={{ fontSize: `${templateConfig.fontSize.barcode}px` }}
+            >
+              {product.CODEBAR}
+            </p>
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <div className="w-full space-y-8">

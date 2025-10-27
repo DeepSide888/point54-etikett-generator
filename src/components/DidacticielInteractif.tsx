@@ -16,22 +16,30 @@ interface DidacticielInteractifProps {
 const steps = [
   {
     title: 'Étape 1 : Importez votre fichier',
-    content: 'Glissez-déposez ou sélectionnez un fichier Excel (.xlsx) ou CSV contenant les colonnes : CODEBAR, PRIX, DESIGNATION, REFERENCE. La colonne QTE sera automatiquement ignorée si présente.',
+    content: 'Glissez-déposez ou sélectionnez un fichier Excel (.xlsx) ou CSV contenant les colonnes : CODEBAR, PRIX, DESIGNATION, REFERENCE, et optionnellement QR_CODE (lien vidéo). La colonne QTE sera ignorée.',
   },
   {
-    title: 'Étape 2 : Vérifiez les données',
-    content: 'Consultez le tableau des produits importés. Vous pouvez modifier les informations en cliquant sur l\'icône de crayon à droite de chaque ligne.',
+    title: 'Étape 2 : Chargez les images produits',
+    content: 'Cliquez sur "Charger les images" et sélectionnez un dossier contenant vos images. Les images doivent être nommées avec la REFERENCE exacte du produit (ex: 01135.jpg).',
   },
   {
-    title: 'Étape 3 : Sélectionnez les produits',
+    title: 'Étape 3 : Vérifiez et modifiez les données',
+    content: 'Consultez le tableau des produits. Vous pouvez modifier les informations (y compris ajouter des liens QR Code) en cliquant sur l\'icône de crayon.',
+  },
+  {
+    title: 'Étape 4 : Personnalisez le template',
+    content: 'Cliquez sur "Personnaliser le template" pour ajuster les polices, couleurs, tailles et positions des éléments sur vos étiquettes.',
+  },
+  {
+    title: 'Étape 5 : Sélectionnez les produits',
     content: 'Cochez les cases à gauche des produits que vous souhaitez imprimer. Vous pouvez tout sélectionner avec la case en haut du tableau.',
   },
   {
-    title: 'Étape 4 : Prévisualisez la planche',
-    content: 'Visualisez vos étiquettes organisées en format A4 (3 colonnes × 8 rangées = 24 étiquettes par planche). Dimensions: 72mm × 32mm par étiquette. Vérifiez que tout est correct avant l\'export.',
+    title: 'Étape 6 : Prévisualisez la planche',
+    content: 'Visualisez vos étiquettes avec images et QR codes en format A4 (3 colonnes × 8 rangées = 24 étiquettes par planche). Vous pouvez encore ajuster le template depuis cette vue.',
   },
   {
-    title: 'Étape 5 : Exportez en PDF',
+    title: 'Étape 7 : Exportez en PDF',
     content: 'Cliquez sur "Exporter en PDF" pour générer votre fichier prêt à imprimer. Le PDF respecte l\'échelle 1:1 pour une impression parfaite sur papier A4.',
   },
 ];

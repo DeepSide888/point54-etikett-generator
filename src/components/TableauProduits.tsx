@@ -9,6 +9,7 @@ interface Product {
   PRIX: string;
   DESIGNATION: string;
   REFERENCE: string;
+  QR_CODE?: string;
 }
 
 interface TableauProduitsProps {
@@ -74,6 +75,7 @@ const TableauProduits = ({ products, onProductsChange, selectedIds, onSelectionC
               <th className="p-3 text-left text-sm font-semibold text-foreground">Désignation</th>
               <th className="p-3 text-left text-sm font-semibold text-foreground">Référence</th>
               <th className="p-3 text-left text-sm font-semibold text-foreground">Prix</th>
+              <th className="p-3 text-left text-sm font-semibold text-foreground">QR Code</th>
               <th className="p-3 text-left text-sm font-semibold text-foreground">Actions</th>
             </tr>
           </thead>
@@ -128,6 +130,20 @@ const TableauProduits = ({ products, onProductsChange, selectedIds, onSelectionC
                     />
                   ) : (
                     <span className="text-sm font-semibold text-foreground">{product.PRIX}</span>
+                  )}
+                </td>
+                <td className="p-3">
+                  {editingId === index ? (
+                    <Input
+                      value={editedProduct?.QR_CODE || ''}
+                      onChange={(e) => setEditedProduct({ ...editedProduct!, QR_CODE: e.target.value })}
+                      placeholder="URL vidéo..."
+                      className="min-w-[150px]"
+                    />
+                  ) : (
+                    <span className="text-xs text-muted-foreground truncate max-w-[150px] block">
+                      {product.QR_CODE || '—'}
+                    </span>
                   )}
                 </td>
                 <td className="p-3">
