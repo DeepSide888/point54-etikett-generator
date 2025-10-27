@@ -12,41 +12,46 @@ interface ApercuPlancheProps {
 }
 
 const ApercuPlanche = ({ selectedProducts }: ApercuPlancheProps) => {
-  // Calculate pages needed (21 labels per page - 3 columns x 7 rows)
-  const labelsPerPage = 21;
+  // Calculate pages needed (24 labels per page - 3 columns x 8 rows)
+  // Label dimensions: 72mm x 32mm
+  const labelsPerPage = 24;
   const pages = Math.ceil(selectedProducts.length / labelsPerPage);
   
   const renderLabel = (product: Product) => (
-    <div className="label-box bg-white border border-gray-300 flex flex-col p-2 h-full">
-      {/* Logo */}
-      <div className="flex items-center gap-2 mb-1">
-        <img src={logoPoint54} alt="Point 54" className="w-8 h-8 object-contain" />
-        <span className="text-[8px] font-bold" style={{ color: '#FF6600' }}>POINT 54</span>
+    <div className="label-box bg-white border border-gray-400 flex flex-col h-full overflow-hidden">
+      {/* Logo - Top Left Corner */}
+      <div className="px-1 pt-1 pb-0.5">
+        <img src={logoPoint54} alt="Point 54" className="w-10 h-10 object-contain" />
       </div>
       
-      {/* Product Image Placeholder */}
-      <div className="bg-gray-200 flex items-center justify-center mb-1 flex-shrink-0" style={{ height: '50px' }}>
-        <span className="text-[7px] text-gray-500">NO IMAGE</span>
+      {/* Product Image - Large and prominent */}
+      <div className="bg-gray-100 flex items-center justify-center flex-shrink-0 border-y border-gray-300" style={{ height: '60px' }}>
+        <span className="text-[8px] text-gray-400 font-medium">IMAGE</span>
       </div>
       
-      {/* Designation */}
-      <div className="mb-1 flex-grow">
-        <p className="text-[9px] font-semibold leading-tight line-clamp-2">{product.DESIGNATION}</p>
-      </div>
-      
-      {/* Reference */}
-      <div className="mb-1">
-        <p className="text-[7px] text-gray-600">Réf: {product.REFERENCE}</p>
-      </div>
-      
-      {/* Price */}
-      <div className="mb-1 text-center">
-        <p className="text-[14px] font-bold" style={{ color: '#FF6600' }}>{product.PRIX}</p>
-      </div>
-      
-      {/* Barcode */}
-      <div className="border-t border-gray-300 pt-1">
-        <p className="text-[7px] text-center font-mono">{product.CODEBAR}</p>
+      {/* Product Info Section */}
+      <div className="flex-grow px-2 py-1 flex flex-col justify-between">
+        {/* Designation - Bold and prominent */}
+        <div className="mb-1">
+          <p className="text-[7px] font-bold leading-tight line-clamp-2 uppercase">{product.DESIGNATION}</p>
+        </div>
+        
+        {/* Reference */}
+        <div className="mb-1">
+          <p className="text-[6px] text-gray-600">Réf: {product.REFERENCE}</p>
+        </div>
+        
+        {/* Price - Large and centered with € symbol */}
+        <div className="text-center py-1">
+          <p className="text-[16px] font-bold leading-none" style={{ color: '#FF6600' }}>
+            {product.PRIX}
+          </p>
+        </div>
+        
+        {/* Barcode */}
+        <div className="border-t border-gray-300 pt-1 mt-1">
+          <p className="text-[6px] text-center font-mono tracking-tight">{product.CODEBAR}</p>
+        </div>
       </div>
     </div>
   );
@@ -54,7 +59,7 @@ const ApercuPlanche = ({ selectedProducts }: ApercuPlancheProps) => {
   return (
     <div className="w-full space-y-8">
       <div className="text-sm text-muted-foreground mb-4">
-        {selectedProducts.length} étiquette(s) sélectionnée(s) • {pages} planche(s) A4
+        {selectedProducts.length} étiquette(s) sélectionnée(s) • {pages} planche(s) A4 (3 colonnes × 8 rangées)
       </div>
       
       {Array.from({ length: pages }).map((_, pageIndex) => {
@@ -62,15 +67,15 @@ const ApercuPlanche = ({ selectedProducts }: ApercuPlancheProps) => {
         const pageProducts = selectedProducts.slice(startIndex, startIndex + labelsPerPage);
         
         return (
-          <div key={pageIndex} className="bg-white shadow-lg mx-auto" style={{ width: '210mm', minHeight: '297mm', padding: '10mm 7mm' }}>
+          <div key={pageIndex} className="bg-white shadow-lg mx-auto" style={{ width: '210mm', minHeight: '297mm', padding: '8mm 5mm' }}>
             <div className="text-xs text-gray-500 mb-2">Planche {pageIndex + 1} / {pages}</div>
             
-            {/* 3 columns x 7 rows grid */}
+            {/* 3 columns x 8 rows grid - Dimensions exactes: 72mm x 32mm par étiquette */}
             <div 
-              className="grid gap-[2mm]"
+              className="grid gap-[1.5mm]"
               style={{ 
-                gridTemplateColumns: 'repeat(3, 1fr)',
-                gridTemplateRows: 'repeat(7, 1fr)',
+                gridTemplateColumns: 'repeat(3, 72mm)',
+                gridTemplateRows: 'repeat(8, 32mm)',
               }}
             >
               {Array.from({ length: labelsPerPage }).map((_, labelIndex) => {
@@ -79,11 +84,11 @@ const ApercuPlanche = ({ selectedProducts }: ApercuPlancheProps) => {
                   <div 
                     key={labelIndex} 
                     style={{ 
-                      width: '70mm', 
-                      height: '42mm',
+                      width: '72mm', 
+                      height: '32mm',
                     }}
                   >
-                    {product ? renderLabel(product) : <div className="border border-dashed border-gray-300 h-full bg-gray-50" />}
+                    {product ? renderLabel(product) : <div className="border border-dashed border-gray-300 h-full bg-gray-50/50" />}
                   </div>
                 );
               })}

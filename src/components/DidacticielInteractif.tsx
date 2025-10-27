@@ -28,7 +28,7 @@ const steps = [
   },
   {
     title: 'Étape 4 : Prévisualisez la planche',
-    content: 'Visualisez vos étiquettes organisées en format A4 (3 colonnes × 7 rangées = 21 étiquettes par planche). Vérifiez que tout est correct avant l\'export.',
+    content: 'Visualisez vos étiquettes organisées en format A4 (3 colonnes × 8 rangées = 24 étiquettes par planche). Dimensions: 72mm × 32mm par étiquette. Vérifiez que tout est correct avant l\'export.',
   },
   {
     title: 'Étape 5 : Exportez en PDF',
