@@ -17,6 +17,10 @@ interface ApercuPlancheProps {
 }
 
 const ApercuPlanche = ({ selectedProducts, productImages, templateConfig }: ApercuPlancheProps) => {
+  console.log('ApercuPlanche - selectedProducts:', selectedProducts);
+  console.log('ApercuPlanche - productImages:', productImages);
+  console.log('ApercuPlanche - templateConfig:', templateConfig);
+  
   // Calculate pages needed (21 labels per page - 3 columns x 7 rows)
   // Label dimensions: 63.5mm x 38.1mm
   const labelsPerPage = 21;
