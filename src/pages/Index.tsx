@@ -3,12 +3,13 @@ import { Button } from '@/components/ui/button';
 import { HelpCircle, Package } from 'lucide-react';
 import ImporterFichier from '@/components/ImporterFichier';
 import TableauProduits from '@/components/TableauProduits';
-import ApercuPlanche from '@/components/ApercuPlanche';
+import { PreviewPane } from '@/components/PreviewPane';
 import ExportPDF from '@/components/ExportPDF';
 import DidacticielInteractif from '@/components/DidacticielInteractif';
 import UploadImages from '@/components/UploadImages';
 import EditeurTemplate, { TemplateConfig } from '@/components/EditeurTemplate';
 import logoPoint54 from '@/assets/logo-point54.png';
+import '@/styles/print.css';
 
 interface Product {
   CODEBAR: string;
@@ -78,6 +79,11 @@ const Index = () => {
 
   const selectedProducts = selectedIds
     .map(id => products[id])
+    .filter(Boolean);
+
+  // Convert selectedIds (indices) to REFERENCE strings
+  const selectedRefs = selectedIds
+    .map(id => products[id]?.REFERENCE)
     .filter(Boolean);
 
   return (
@@ -209,8 +215,9 @@ const Index = () => {
                   <ExportPDF selectedProducts={selectedProducts} />
                 </div>
               </div>
-              <ApercuPlanche 
-                selectedProducts={selectedProducts}
+              <PreviewPane 
+                items={products}
+                selectedIds={selectedRefs}
                 productImages={productImages}
                 templateConfig={templateConfig}
               />
