@@ -36,7 +36,7 @@ const steps = [
   },
   {
     title: 'Étape 6 : Prévisualisez la planche',
-    content: 'Visualisez vos étiquettes avec images et QR codes en format A4 (3 colonnes × 8 rangées = 24 étiquettes par planche). Vous pouvez encore ajuster le template depuis cette vue.',
+    content: 'Visualisez vos étiquettes avec images et QR codes en format A4 (3 colonnes × 7 rangées = 21 étiquettes par planche). Vous pouvez encore ajuster le template depuis cette vue.',
   },
   {
     title: 'Étape 7 : Exportez en PDF',
