@@ -139,7 +139,7 @@ const ApercuPlanche = ({ selectedProducts, productImages, templateConfig }: Aper
               className="font-bold leading-none"
               style={{ fontSize: '48pt' }}
             >
-              {product.PRIX.replace('€', '').trim()}
+              {String(product.PRIX).replace('€', '').trim()}
             </span>
             <span 
               className="font-bold"
