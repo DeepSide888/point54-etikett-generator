@@ -1,53 +1,44 @@
-import { LabelCard } from "./LabelCard";
-import { TemplateConfig } from "./EditeurTemplate";
-
-export interface LabelItem {
-  REFERENCE: string;
-  CODEBAR: string;
-  DESIGNATION: string;
-  PRIX: number | string;
-  IMAGE_PATH?: string;
-  QR_CODE?: string;
-}
+import LabelCardV2 from "./LabelCardV2";
+import { mapItem, chunk } from "../lib/label-utils";
+import type { TemplateConfig } from "./EditeurTemplate";
 
 interface PreviewPaneProps {
-  items: LabelItem[];
+  items: any[];
   selectedIds: string[];
   productImages: Record<string, string>;
   templateConfig: TemplateConfig;
 }
 
-const PLACEHOLDER: LabelItem = {
-  REFERENCE: "—",
-  CODEBAR: "—",
-  DESIGNATION: "Aucun article chargé",
-  PRIX: "",
-};
-
-const chunk = <T,>(arr: T[], size: number) =>
-  Array.from({ length: Math.max(1, Math.ceil(arr.length / size)) }, (_, i) =>
-    arr.slice(i * size, i * size + size)
-  );
+const PER_PAGE = 21;
 
 export function PreviewPane({
   items = [],
   selectedIds = [],
-  productImages,
+  productImages = {},
   templateConfig,
 }: PreviewPaneProps) {
-  // Fallback logic: if no items, show placeholder; if no selection, show all items
-  const pool = items.length ? items : [PLACEHOLDER];
-  const selected =
-    selectedIds && selectedIds.length
-      ? pool.filter(p => selectedIds.includes(String(p.REFERENCE)))
-      : pool;
+  // Map raw data to LabelItem format
+  const base = (selectedIds && selectedIds.length)
+    ? items.filter(item => selectedIds.includes(String(item.REFERENCE)))
+    : items;
+  
+  const mappedItems = base.map(item => mapItem(item, productImages));
+  const pages = chunk(mappedItems, PER_PAGE);
 
-  const pages = chunk(selected, 21);
+  if (mappedItems.length === 0) {
+    return (
+      <div className="preview-wrap">
+        <div className="page-a4-3x7">
+          <div className="empty">Aucun article chargé</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="preview w-full space-y-8">
+    <div className="preview-wrap w-full">
       <div className="text-sm text-muted-foreground mb-4">
-        {selected.length} étiquette(s) • {pages.length} planche(s) A4 (3 colonnes × 7 rangées)
+        {mappedItems.length} étiquette(s) • {pages.length} planche(s) A4 (3 colonnes × 7 rangées)
       </div>
       
       {pages.map((page, pi) => (
@@ -56,20 +47,10 @@ export function PreviewPane({
             Planche {pi + 1} / {pages.length}
           </div>
           
-          <div className="page bg-white shadow-lg mx-auto">
-            {Array.from({ length: 21 }).map((_, labelIndex) => {
-              const product = page[labelIndex];
-              return product ? (
-                <LabelCard 
-                  key={labelIndex}
-                  item={product} 
-                  productImages={productImages}
-                  templateConfig={templateConfig}
-                />
-              ) : (
-                <div key={labelIndex} className="border border-dashed border-gray-300 bg-gray-50/50" />
-              );
-            })}
+          <div className="page-a4-3x7 shadow-lg mx-auto">
+            {page.map((item, i) => (
+              <LabelCardV2 key={i} item={item} />
+            ))}
           </div>
         </div>
       ))}
