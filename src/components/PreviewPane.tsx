@@ -35,12 +35,12 @@ export function PreviewPane({
   productImages,
   templateConfig,
 }: PreviewPaneProps) {
-  // Fallback logic: if no items, show placeholder; if no selection, show first 21
+  // Fallback logic: if no items, show placeholder; if no selection, show all items
   const pool = items.length ? items : [PLACEHOLDER];
   const selected =
     selectedIds && selectedIds.length
       ? pool.filter(p => selectedIds.includes(String(p.REFERENCE)))
-      : pool.slice(0, 21);
+      : pool;
 
   const pages = chunk(selected, 21);
 
@@ -51,27 +51,23 @@ export function PreviewPane({
       </div>
       
       {pages.map((page, pi) => (
-        <div className="page bg-white shadow-lg mx-auto" key={pi}>
+        <div key={pi}>
           <div className="text-xs text-gray-500 mb-2">
             Planche {pi + 1} / {pages.length}
           </div>
           
-          {/* Grid 3×7 with exact gaps and dimensions */}
-          <div className="page-grid">
+          <div className="page bg-white shadow-lg mx-auto">
             {Array.from({ length: 21 }).map((_, labelIndex) => {
               const product = page[labelIndex];
-              return (
-                <div key={labelIndex} className="label-wrapper">
-                  {product ? (
-                    <LabelCard 
-                      item={product} 
-                      productImages={productImages}
-                      templateConfig={templateConfig}
-                    />
-                  ) : (
-                    <div className="border border-dashed border-gray-300 h-full bg-gray-50/50" />
-                  )}
-                </div>
+              return product ? (
+                <LabelCard 
+                  key={labelIndex}
+                  item={product} 
+                  productImages={productImages}
+                  templateConfig={templateConfig}
+                />
+              ) : (
+                <div key={labelIndex} className="border border-dashed border-gray-300 bg-gray-50/50" />
               );
             })}
           </div>
