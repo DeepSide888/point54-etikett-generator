@@ -29,8 +29,8 @@ const ExportPDF = ({ selectedProducts }: ExportPDFProps) => {
     
     try {
       // Get all page elements
-      const pages = document.querySelectorAll('.bg-white.shadow-lg');
-      
+      const pages = document.querySelectorAll('.page-a4-3x7');
+
       if (pages.length === 0) {
         toast.error('Aucune planche à exporter');
         setIsExporting(false);

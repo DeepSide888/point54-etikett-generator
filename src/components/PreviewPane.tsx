@@ -49,7 +49,7 @@ export function PreviewPane({
           
           <div className="page-a4-3x7 shadow-lg mx-auto">
             {page.map((item, i) => (
-              <LabelCardV2 key={i} item={item} />
+              <LabelCardV2 key={i} item={item} templateConfig={templateConfig} />
             ))}
           </div>
         </div>
