@@ -1,12 +1,10 @@
 import LabelCardV2 from "./LabelCardV2";
 import { mapItem, chunk } from "../lib/label-utils";
-import type { TemplateConfig } from "./EditeurTemplate";
 
 interface PreviewPaneProps {
   items: any[];
   selectedIds: string[];
   productImages: Record<string, string>;
-  templateConfig: TemplateConfig;
 }
 
 const PER_PAGE = 21;
@@ -15,7 +13,6 @@ export function PreviewPane({
   items = [],
   selectedIds = [],
   productImages = {},
-  templateConfig,
 }: PreviewPaneProps) {
   // Map raw data to LabelItem format
   const base = (selectedIds && selectedIds.length)
@@ -49,7 +46,7 @@ export function PreviewPane({
           
           <div className="page-a4-3x7 shadow-lg mx-auto">
             {page.map((item, i) => (
-              <LabelCardV2 key={i} item={item} templateConfig={templateConfig} />
+              <LabelCardV2 key={i} item={item} />
             ))}
           </div>
         </div>

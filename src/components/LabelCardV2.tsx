@@ -1,43 +1,91 @@
-import { LabelItem, fmtPrice, titlePt } from '../lib/label-utils';
+import { LabelItem, fmtPrice } from '../lib/label-utils';
 import logoP54 from '../assets/logo-point54.png';
-import type { TemplateConfig } from './EditeurTemplate';
+import Barcode from './Barcode';
+import QRCodeBox from './QRCodeBox';
+import { useSettings } from '../settings/SettingsContext';
 
 interface LabelCardV2Props {
   item: LabelItem;
-  templateConfig?: TemplateConfig;
 }
 
-export default function LabelCardV2({ item, templateConfig }: LabelCardV2Props) {
-  const config = templateConfig || {
-    fontSize: { designation: 7, reference: 6, price: 16, barcode: 6 },
-    colors: { price: '#FF6600', text: '#000000', logo: '#FF6600' },
-    fontFamily: 'Arial',
-    logoSize: 40,
-    imageHeight: 60,
-  };
+export default function LabelCardV2({ item }: LabelCardV2Props) {
+  const { theme } = useSettings();
+  const { fontFamily, colors, sizes, layout, watermark } = theme;
 
   return (
-    <div className="label-v2" style={{ fontFamily: config.fontFamily, color: config.colors.text }}>
-      <div className="logo">
-        <img src={logoP54} alt="Point 54" style={{ maxHeight: `${config.logoSize}%` }} />
+    <div
+      style={{
+        width: `${layout.label.widthMm}mm`,
+        height: `${layout.label.heightMm}mm`,
+        boxSizing: "border-box",
+        padding: `${layout.label.paddingMm}mm`,
+        display: "grid",
+        gridTemplateColumns: "38mm 1fr",
+        gridTemplateRows: "10mm 18mm 7mm",
+        gap: `${layout.label.gapMm}mm`,
+        border: `${layout.label.borderMm}mm solid ${colors.border}`,
+        background: colors.bg,
+        position: "relative",
+        fontFamily
+      }}
+    >
+      {watermark.enabled && (
+        <img
+          src={logoP54}
+          aria-hidden
+          style={{
+            position: "absolute",
+            left: "2mm",
+            top: "14mm",
+            height: "18mm",
+            opacity: watermark.opacity,
+            pointerEvents: "none"
+          }}
+        />
+      )}
+
+      <div style={{ display: "flex", alignItems: "center", gap: "2mm" }}>
+        <img src={logoP54} alt="Point 54" style={{ height: `${layout.logo.heightMm}mm`, objectFit: "contain" }} />
       </div>
-      <div className="ref" style={{ fontSize: `${config.fontSize.reference}pt` }}>
-        Réf : <b>{item.ref || '—'}</b>
+      
+      <div style={{ textAlign: "right", alignSelf: "center" }}>
+        <div style={{ fontWeight: 800, fontSize: `${sizes.pricePt}pt`, lineHeight: 1, color: colors.price }}>
+          {fmtPrice(item.price)}
+        </div>
       </div>
-      <div className="ean" style={{ fontSize: `${config.fontSize.barcode}pt` }}>{item.ean || '—'}</div>
-      <div className="media" style={{ height: `${config.imageHeight}%` }}>
-        {item.image ? (
-          <img src={item.image} alt="" />
-        ) : (
-          <div className="noimg">NO IMAGE</div>
-        )}
-      </div>
-      <div className="title" style={{ fontSize: `${config.fontSize.designation}pt` }}>
+
+      <div
+        style={{
+          gridColumn: "1 / span 2",
+          fontWeight: 700,
+          fontSize: `${sizes.titlePt}pt`,
+          lineHeight: 1.1,
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          color: colors.text
+        }}
+        title={item.title}
+      >
         {String(item.title).toUpperCase()}
       </div>
-      <div className="price" style={{ color: config.colors.price }}>
-        <span className="pnum" style={{ fontSize: `${config.fontSize.price}pt` }}>{fmtPrice(item.price)}</span>
-        <span className="peur">€</span>
+
+      <div>
+        {item.image ? (
+          <img src={item.image} alt={item.ref} style={{ width: "100%", height: "18mm", objectFit: "contain" }} />
+        ) : null}
+      </div>
+
+      <div style={{ display: "grid", gridTemplateRows: "1fr 1fr", alignItems: "end", justifyItems: "end" }}>
+        <div style={{ fontSize: `${sizes.refPt}pt`, fontWeight: 600, justifySelf: "start", color: colors.text }}>
+          {item.ref ? `Réf : ${item.ref}` : "\u00A0"}
+        </div>
+        <div style={{ display: "flex", gap: "2mm", alignItems: "end" }}>
+          {item.ean ? <Barcode value={item.ean} widthMm={layout.barcode.widthMm} heightMm={layout.barcode.heightMm} /> : null}
+          <div style={{ width: `${layout.qr.sizeMm}mm`, height: `${layout.qr.sizeMm}mm` }}>
+            <QRCodeBox url={(item as any).qrurl || ""} sizeMm={layout.qr.sizeMm} />
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -7,7 +7,7 @@ import { PreviewPane } from '@/components/PreviewPane';
 import ExportPDF from '@/components/ExportPDF';
 import DidacticielInteractif from '@/components/DidacticielInteractif';
 import UploadImages from '@/components/UploadImages';
-import EditeurTemplate, { TemplateConfig } from '@/components/EditeurTemplate';
+import SettingsPanel from '@/components/SettingsPanel';
 import logoPoint54 from '@/assets/logo-point54.png';
 import '@/styles/print.css';
 
@@ -17,24 +17,10 @@ interface Product {
   DESIGNATION: string;
   REFERENCE: string;
   QR_CODE?: string;
+  QRURL?: string;
+  IMAGE?: string;
+  QTE?: string;
 }
-
-const DEFAULT_TEMPLATE: TemplateConfig = {
-  fontSize: {
-    designation: 7,
-    reference: 6,
-    price: 16,
-    barcode: 6,
-  },
-  colors: {
-    price: '#FF6600',
-    text: '#000000',
-    logo: '#FF6600',
-  },
-  fontFamily: 'Arial',
-  logoSize: 40,
-  imageHeight: 60,
-};
 
 const Index = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -42,24 +28,6 @@ const Index = () => {
   const [showTutorial, setShowTutorial] = useState(false);
   const [currentView, setCurrentView] = useState<'import' | 'table' | 'preview'>('import');
   const [productImages, setProductImages] = useState<Record<string, string>>({});
-  const [templateConfig, setTemplateConfig] = useState<TemplateConfig>(DEFAULT_TEMPLATE);
-
-  // Load saved config from localStorage
-  useEffect(() => {
-    const saved = localStorage.getItem('point54-template-config');
-    if (saved) {
-      try {
-        setTemplateConfig(JSON.parse(saved));
-      } catch (e) {
-        console.error('Failed to load template config');
-      }
-    }
-  }, []);
-
-  // Save config to localStorage
-  useEffect(() => {
-    localStorage.setItem('point54-template-config', JSON.stringify(templateConfig));
-  }, [templateConfig]);
 
   const handleDataImported = (data: any[]) => {
     const formattedProducts = data.map((item) => ({
@@ -68,6 +36,9 @@ const Index = () => {
       DESIGNATION: item.DESIGNATION || '',
       REFERENCE: item.REFERENCE || '',
       QR_CODE: item.QR_CODE || '',
+      QRURL: item.QRURL || item.QR_URL || '',
+      IMAGE: item.IMAGE || item.IMAGE_PATH || '',
+      QTE: item.QTE || item.QTY || '',
     }));
     setProducts(formattedProducts);
     setCurrentView('table');
@@ -174,10 +145,7 @@ const Index = () => {
                   Gestion des produits
                 </h2>
                 <div className="flex gap-3">
-                  <EditeurTemplate 
-                    config={templateConfig}
-                    onConfigChange={setTemplateConfig}
-                  />
+                  <SettingsPanel />
                   <Button
                     onClick={() => setCurrentView('preview')}
                     disabled={selectedIds.length === 0}
@@ -208,10 +176,7 @@ const Index = () => {
                   Aperçu des planches A4
                 </h2>
                 <div className="flex gap-3">
-                  <EditeurTemplate 
-                    config={templateConfig}
-                    onConfigChange={setTemplateConfig}
-                  />
+                  <SettingsPanel />
                   <ExportPDF selectedProducts={selectedProducts} />
                 </div>
               </div>
@@ -219,7 +184,6 @@ const Index = () => {
                 items={products}
                 selectedIds={selectedRefs}
                 productImages={productImages}
-                templateConfig={templateConfig}
               />
             </div>
           )}

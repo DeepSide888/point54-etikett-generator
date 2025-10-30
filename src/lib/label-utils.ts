@@ -4,6 +4,8 @@ export type LabelItem = {
   title: string;
   price: number | string;
   image?: string;
+  qrurl?: string;
+  qty?: number | string;
 };
 
 export const mapItem = (row: any, productImages?: Record<string, string>): LabelItem => ({
@@ -11,7 +13,9 @@ export const mapItem = (row: any, productImages?: Record<string, string>): Label
   ean: String(row.CODEBAR ?? row.EAN ?? ''),
   title: String(row.DESIGNATION ?? ''),
   price: row.PRIX ?? '',
-  image: productImages?.[row.REFERENCE] ?? row.IMAGE_PATH ?? '',
+  image: productImages?.[row.REFERENCE] ?? row.IMAGE_PATH ?? row.IMAGE ?? '',
+  qrurl: row.QRURL ?? row.QR_URL ?? '',
+  qty: row.QTE ?? row.QTY ?? '',
 });
 
 export const chunk = <T,>(a: T[], n: number) =>
