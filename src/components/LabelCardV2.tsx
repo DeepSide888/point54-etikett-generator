@@ -1,4 +1,4 @@
-import { LabelItem, fmtPrice } from '../lib/label-utils';
+import { LabelItem, fmtPrice, titlePt } from '../lib/label-utils';
 import logoP54 from '../assets/logo-point54.png';
 import Barcode from './Barcode';
 import QRCodeBox from './QRCodeBox';
@@ -11,6 +11,11 @@ interface LabelCardV2Props {
 export default function LabelCardV2({ item }: LabelCardV2Props) {
   const { theme } = useSettings();
   const { fontFamily, colors, sizes, layout, watermark } = theme;
+  
+  // Calcul dynamique des tailles de texte selon le contenu
+  const dynamicTitleSize = titlePt(item.title);
+  const priceStr = fmtPrice(item.price);
+  const dynamicPriceSize = priceStr.length > 6 ? 24 : sizes.pricePt;
 
   return (
     <div
@@ -53,7 +58,7 @@ export default function LabelCardV2({ item }: LabelCardV2Props) {
           style={{
             flex: 1,
             fontWeight: 700,
-            fontSize: `${sizes.titlePt}pt`,
+            fontSize: `${dynamicTitleSize}pt`,
             lineHeight: 1,
             color: colors.text,
             textTransform: "uppercase",
@@ -82,8 +87,8 @@ export default function LabelCardV2({ item }: LabelCardV2Props) {
         </div>
         
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%" }}>
-          <div style={{ fontWeight: 800, fontSize: `${sizes.pricePt}pt`, lineHeight: 1, color: colors.price, display: "flex", alignItems: "baseline", gap: "0.5mm" }}>
-            <span>{fmtPrice(item.price)}</span>
+          <div style={{ fontWeight: 800, fontSize: `${dynamicPriceSize}pt`, lineHeight: 1, color: colors.price, display: "flex", alignItems: "baseline", gap: "0.5mm" }}>
+            <span>{priceStr}</span>
             <span style={{ fontSize: "11pt", fontWeight: 700 }}>€</span>
           </div>
         </div>
