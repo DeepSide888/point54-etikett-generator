@@ -76,11 +76,11 @@ export default function LabelCardV2({ item }: LabelCardV2Props) {
 
       {/* Middle row: Image + Price */}
       <div style={{ display: "grid", gridTemplateColumns: "35mm 1fr", gap: "2mm", alignItems: "center" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "35mm", height: "100%", overflow: "hidden" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "35mm", height: "15mm", overflow: "hidden" }}>
           {item.image ? (
-            <img src={item.image} alt={item.ref} style={{ maxWidth: "100%", maxHeight: "100%", width: "auto", height: "auto", objectFit: "contain" }} />
+            <img src={item.image} alt={item.ref} style={{ maxWidth: "35mm", maxHeight: "15mm", width: "auto", height: "auto", objectFit: "contain" }} />
           ) : (
-            <div style={{ width: "100%", height: "100%", background: "#f5f5f5", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "7pt", color: "#999" }}>
+            <div style={{ width: "35mm", height: "15mm", background: "#f5f5f5", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "7pt", color: "#999" }}>
               Image
             </div>
           )}
