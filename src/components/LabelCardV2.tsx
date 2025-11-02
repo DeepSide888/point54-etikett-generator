@@ -71,9 +71,9 @@ export default function LabelCardV2({ item }: LabelCardV2Props) {
 
       {/* Middle row: Image + Price */}
       <div style={{ display: "grid", gridTemplateColumns: "35mm 1fr", gap: "2mm", alignItems: "center" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "35mm", height: "100%", overflow: "hidden" }}>
           {item.image ? (
-            <img src={item.image} alt={item.ref} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+            <img src={item.image} alt={item.ref} style={{ maxWidth: "100%", maxHeight: "100%", width: "auto", height: "auto", objectFit: "contain" }} />
           ) : (
             <div style={{ width: "100%", height: "100%", background: "#f5f5f5", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "7pt", color: "#999" }}>
               Image
@@ -81,10 +81,10 @@ export default function LabelCardV2({ item }: LabelCardV2Props) {
           )}
         </div>
         
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <div style={{ fontWeight: 800, fontSize: `${sizes.pricePt}pt`, lineHeight: 1, color: colors.price, display: "flex", alignItems: "baseline", gap: "1mm" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%" }}>
+          <div style={{ fontWeight: 800, fontSize: `${sizes.pricePt}pt`, lineHeight: 1, color: colors.price, display: "flex", alignItems: "baseline", gap: "0.5mm" }}>
             <span>{fmtPrice(item.price)}</span>
-            <span style={{ fontSize: `${Math.round(sizes.pricePt * 0.4)}pt` }}>€</span>
+            <span style={{ fontSize: "11pt", fontWeight: 700 }}>€</span>
           </div>
         </div>
       </div>
