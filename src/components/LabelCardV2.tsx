@@ -52,21 +52,22 @@ export default function LabelCardV2({ item }: LabelCardV2Props) {
       )}
 
       {/* Header row: Logo + Title */}
-      <div style={{ display: "flex", alignItems: "center", gap: "2mm", justifyContent: "space-between" }}>
-        <img src={logoP54} alt="Point 54" style={{ height: `${layout.logo.heightMm}mm`, objectFit: "contain" }} />
+      <div style={{ display: "flex", alignItems: "flex-start", gap: "2mm", justifyContent: "space-between" }}>
+        <img src={logoP54} alt="Point 54" style={{ height: `${layout.logo.heightMm}mm`, objectFit: "contain", flexShrink: 0 }} />
         <div
           style={{
             flex: 1,
             fontWeight: 700,
             fontSize: `${dynamicTitleSize}pt`,
-            lineHeight: 1,
+            lineHeight: 1.1,
             color: colors.text,
             textTransform: "uppercase",
             textAlign: "left",
             marginLeft: "2mm",
-            whiteSpace: "nowrap",
             overflow: "hidden",
-            textOverflow: "ellipsis"
+            display: "-webkit-box",
+            WebkitLineClamp: 3,
+            WebkitBoxOrient: "vertical"
           }}
           title={item.title}
         >
@@ -87,9 +88,9 @@ export default function LabelCardV2({ item }: LabelCardV2Props) {
         </div>
         
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%" }}>
-          <div style={{ fontWeight: 800, fontSize: `${dynamicPriceSize}pt`, lineHeight: 1, color: colors.price, display: "flex", alignItems: "baseline", gap: "0.5mm" }}>
+          <div style={{ fontWeight: 800, fontSize: `${sizes.pricePt * 1.8}pt`, lineHeight: 1, color: colors.price, display: "flex", alignItems: "baseline", gap: "1mm" }}>
             <span>{priceStr}</span>
-            <span style={{ fontSize: "11pt", fontWeight: 700 }}>€</span>
+            <span style={{ fontSize: `${sizes.pricePt * 0.8}pt`, fontWeight: 700 }}>€</span>
           </div>
         </div>
       </div>
