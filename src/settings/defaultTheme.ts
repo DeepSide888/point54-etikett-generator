@@ -14,9 +14,9 @@ export const defaultTheme = {
   },
   layout: {
     label: { widthMm: 62, heightMm: 37, paddingMm: 2, gapMm: 1, borderMm: 0.2 },
-    barcode: { widthMm: 38, heightMm: 14 },
-    qr: { sizeMm: 20 },
-    logo: { heightMm: 8 },
+    barcode: { widthMm: 30, heightMm: 10 },
+    qr: { sizeMm: 15 },
+    logo: { heightMm: 6 },
     sheet: { columns: 3, rows: 7, pagePaddingMm: 5, colGapMm: 4, rowGapMm: 0 }
   },
   watermark: { enabled: false, opacity: 0.08 }

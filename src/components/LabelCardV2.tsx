@@ -20,13 +20,14 @@ export default function LabelCardV2({ item }: LabelCardV2Props) {
         boxSizing: "border-box",
         padding: `${layout.label.paddingMm}mm`,
         display: "grid",
-        gridTemplateColumns: "40mm 1fr",
-        gridTemplateRows: "8mm 1fr 8mm",
+        gridTemplateColumns: "1fr",
+        gridTemplateRows: "7mm 1fr 11mm",
         gap: `${layout.label.gapMm}mm`,
         border: `${layout.label.borderMm}mm solid ${colors.border}`,
         background: colors.bg,
         position: "relative",
-        fontFamily
+        fontFamily,
+        overflow: "hidden"
       }}
     >
       {watermark.enabled && (
@@ -46,60 +47,67 @@ export default function LabelCardV2({ item }: LabelCardV2Props) {
       )}
 
       {/* Header row: Logo + Title */}
-      <div style={{ display: "flex", alignItems: "center", gap: "2mm" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "2mm", justifyContent: "space-between" }}>
         <img src={logoP54} alt="Point 54" style={{ height: `${layout.logo.heightMm}mm`, objectFit: "contain" }} />
-      </div>
-      
-      <div
-        style={{
-          fontWeight: 700,
-          fontSize: `${sizes.titlePt}pt`,
-          lineHeight: 1.1,
-          display: "-webkit-box",
-          WebkitLineClamp: 2,
-          WebkitBoxOrient: "vertical",
-          overflow: "hidden",
-          color: colors.text,
-          textTransform: "uppercase"
-        }}
-        title={item.title}
-      >
-        {String(item.title).toUpperCase()}
+        <div
+          style={{
+            flex: 1,
+            fontWeight: 700,
+            fontSize: `${sizes.titlePt}pt`,
+            lineHeight: 1,
+            color: colors.text,
+            textTransform: "uppercase",
+            textAlign: "left",
+            marginLeft: "2mm",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis"
+          }}
+          title={item.title}
+        >
+          {String(item.title).toUpperCase()}
+        </div>
       </div>
 
       {/* Middle row: Image + Price */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-        {item.image ? (
-          <img src={item.image} alt={item.ref} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
-        ) : (
-          <div style={{ width: "100%", height: "100%", background: "#f5f5f5", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "7pt", color: "#999" }}>
-            Image
+      <div style={{ display: "grid", gridTemplateColumns: "35mm 1fr", gap: "2mm", alignItems: "center" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%" }}>
+          {item.image ? (
+            <img src={item.image} alt={item.ref} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+          ) : (
+            <div style={{ width: "100%", height: "100%", background: "#f5f5f5", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "7pt", color: "#999" }}>
+              Image
+            </div>
+          )}
+        </div>
+        
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ fontWeight: 800, fontSize: `${sizes.pricePt}pt`, lineHeight: 1, color: colors.price, display: "flex", alignItems: "baseline", gap: "1mm" }}>
+            <span>{fmtPrice(item.price)}</span>
+            <span style={{ fontSize: `${Math.round(sizes.pricePt * 0.4)}pt` }}>€</span>
           </div>
-        )}
-      </div>
-
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <div style={{ fontWeight: 800, fontSize: `${sizes.pricePt}pt`, lineHeight: 1, color: colors.price, display: "flex", alignItems: "baseline", gap: "1mm" }}>
-          <span>{fmtPrice(item.price)}</span>
-          <span style={{ fontSize: `${Math.round(sizes.pricePt * 0.4)}pt` }}>€</span>
         </div>
       </div>
 
-      {/* Bottom row: Ref + Barcode | QR Code */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "0.5mm", justifyContent: "flex-end" }}>
-        <div style={{ fontSize: `${sizes.refPt}pt`, fontWeight: 600, color: colors.text }}>
-          {item.ref ? `Réf : ${item.ref}` : "\u00A0"}
+      {/* Bottom row: Ref + Barcode + QR Code */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: "2mm", alignItems: "end" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.5mm", justifyContent: "flex-end" }}>
+          <div style={{ fontSize: `${sizes.refPt}pt`, fontWeight: 600, color: colors.text }}>
+            {item.ref ? `Réf : ${item.ref}` : "\u00A0"}
+          </div>
+          {item.ean ? (
+            <div style={{ maxWidth: `${layout.barcode.widthMm}mm` }}>
+              <Barcode value={item.ean} widthMm={layout.barcode.widthMm} heightMm={layout.barcode.heightMm} />
+            </div>
+          ) : null}
         </div>
-        {item.ean ? (
-          <Barcode value={item.ean} widthMm={layout.barcode.widthMm} heightMm={layout.barcode.heightMm} />
-        ) : null}
-      </div>
 
-      <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "flex-end" }}>
-        <div style={{ width: `${layout.qr.sizeMm}mm`, height: `${layout.qr.sizeMm}mm`, position: "relative" }}>
-          <QRCodeBox url={item.qrurl || ""} sizeMm={layout.qr.sizeMm} />
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.5mm" }}>
+          <div style={{ width: `${layout.qr.sizeMm}mm`, height: `${layout.qr.sizeMm}mm` }}>
+            <QRCodeBox url={item.qrurl || ""} sizeMm={layout.qr.sizeMm} />
+          </div>
           {item.qrurl && (
-            <div style={{ position: "absolute", bottom: "-3mm", left: "50%", transform: "translateX(-50%)", fontSize: "5pt", fontWeight: 700, whiteSpace: "nowrap" }}>
+            <div style={{ fontSize: "5pt", fontWeight: 700, whiteSpace: "nowrap", lineHeight: 1 }}>
               SCAN ME!
             </div>
           )}
