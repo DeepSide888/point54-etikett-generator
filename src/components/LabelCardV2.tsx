@@ -26,7 +26,7 @@ export default function LabelCardV2({ item }: LabelCardV2Props) {
         padding: `${layout.label.paddingMm}mm`,
         display: "grid",
         gridTemplateColumns: "1fr",
-        gridTemplateRows: "7mm 1fr 11mm",
+        gridTemplateRows: "9mm 1fr 12mm",
         gap: `${layout.label.gapMm}mm`,
         border: `${layout.label.borderMm}mm solid ${colors.border}`,
         background: colors.bg,
@@ -52,22 +52,23 @@ export default function LabelCardV2({ item }: LabelCardV2Props) {
       )}
 
       {/* Header row: Logo + Title */}
-      <div style={{ display: "flex", alignItems: "flex-start", gap: "2mm", justifyContent: "space-between" }}>
+      <div style={{ display: "flex", alignItems: "flex-start", gap: "2mm", justifyContent: "space-between", height: "100%" }}>
         <img src={logoP54} alt="Point 54" style={{ height: `${layout.logo.heightMm}mm`, objectFit: "contain", flexShrink: 0 }} />
         <div
           style={{
             flex: 1,
             fontWeight: 700,
-            fontSize: `${dynamicTitleSize}pt`,
-            lineHeight: 1.1,
+            fontSize: "8pt",
+            lineHeight: 1.15,
             color: colors.text,
             textTransform: "uppercase",
             textAlign: "left",
-            marginLeft: "2mm",
+            marginLeft: "1mm",
             overflow: "hidden",
             display: "-webkit-box",
             WebkitLineClamp: 3,
-            WebkitBoxOrient: "vertical"
+            WebkitBoxOrient: "vertical",
+            wordBreak: "break-word"
           }}
           title={item.title}
         >
@@ -76,21 +77,21 @@ export default function LabelCardV2({ item }: LabelCardV2Props) {
       </div>
 
       {/* Middle row: Image + Price */}
-      <div style={{ display: "grid", gridTemplateColumns: "35mm 1fr", gap: "2mm", alignItems: "center" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "35mm", height: "15mm", overflow: "hidden" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "30mm 1fr", gap: "1mm", alignItems: "center", height: "100%" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "30mm", height: "100%", overflow: "hidden" }}>
           {item.image ? (
-            <img src={item.image} alt={item.ref} style={{ maxWidth: "35mm", maxHeight: "15mm", width: "auto", height: "auto", objectFit: "contain" }} />
+            <img src={item.image} alt={item.ref} style={{ maxWidth: "100%", maxHeight: "100%", width: "auto", height: "auto", objectFit: "contain" }} />
           ) : (
-            <div style={{ width: "35mm", height: "15mm", background: "#f5f5f5", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "7pt", color: "#999" }}>
+            <div style={{ width: "100%", height: "100%", background: "#f5f5f5", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "7pt", color: "#999" }}>
               Image
             </div>
           )}
         </div>
         
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%" }}>
-          <div style={{ fontWeight: 800, fontSize: `${sizes.pricePt * 1.8}pt`, lineHeight: 1, color: colors.price, display: "flex", alignItems: "baseline", gap: "1mm" }}>
+          <div style={{ fontWeight: 900, fontSize: "56pt", lineHeight: 0.9, color: colors.price, display: "flex", alignItems: "center", gap: "1mm" }}>
             <span>{priceStr}</span>
-            <span style={{ fontSize: `${sizes.pricePt * 0.8}pt`, fontWeight: 700 }}>€</span>
+            <span style={{ fontSize: "28pt", fontWeight: 800 }}>€</span>
           </div>
         </div>
       </div>
